@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Word Reverser</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            margin: 0;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: #333;
+        }
+        .container {
+            background: white;
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+            animation: fadeIn 0.5s ease-in-out;
+        }
+        h2 {
+            margin-bottom: 1.5rem;
+            color: #333;
+            font-size: 1.8rem;
+            font-weight: 600;
+        }
+        input[type="text"] {
+            width: 100%;
+            padding: 0.75rem;
+            margin-bottom: 1rem;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 1rem;
+            transition: border-color 0.3s, box-shadow 0.3s;
+            box-sizing: border-box;
+        }
+        input[type="text"]:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 8px rgba(102, 126, 234, 0.3);
+        }
+        button {
+            background-color: #667eea;
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 6px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.2s;
+        }
+        button:hover {
+            background-color: #5a6cd3;
+            transform: translateY(-2px);
+        }
+        button:active {
+            transform: translateY(0);
+        }
+        #result {
+            margin-top: 1.5rem;
+            font-size: 1.1rem;
+            color: #333;
+            min-height: 1.5rem;
+            opacity: 0;
+            transition: opacity 0.3s ease-in-out;
+        }
+        #result.show {
+            opacity: 1;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @media (max-width: 480px) {
+            .container {
+                padding: 1.5rem;
+                margin: 1rem;
+            }
+            h2 {
+                font-size: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Type a word to reverse:</h2>
+        <input type="text" id="wordInput" placeholder="Enter a word">
+        <button onclick="sendWord()">Reverse</button>
+        <p id="result"></p>
+    </div>
+
+    <script>
+        async function sendWord() {
+            const word = document.getElementById('wordInput').value;
+            const resultElement = document.getElementById('result');
+            resultElement.innerText = '';
+            try {
+                const response = await fetch('/reverse', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({word: word})
+                });
+                const data = await response.json();
+                resultElement.innerText = 'Reversed: ' + data.reversed;
+                resultElement.classList.add('show');
+            } catch (error) {
+                resultElement.innerText = 'Error: Could not reverse word';
+                resultElement.classList.add('show');
+            }
+        }
+    </script>
+</body>
+</html>
